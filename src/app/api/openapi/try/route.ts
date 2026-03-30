@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     // Build the target URL using the incoming request's origin
     const origin = request.headers.get("x-forwarded-proto")
       ? `${request.headers.get("x-forwarded-proto")}://${request.headers.get("host")}`
-      : `http://${request.headers.get("host") || "127.0.0.1:20128"}`;
+      : `http://${request.headers.get("host") || `${getLoopbackHost()}:20128`}`;
 
     const targetUrl = `${origin}${path}`;
 

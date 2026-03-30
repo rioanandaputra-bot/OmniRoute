@@ -11,6 +11,7 @@
 import { randomUUID } from "node:crypto";
 import { getSettings, updateSettings } from "@/lib/localDb";
 import { getRuntimePorts } from "@/lib/runtime/ports";
+import { getLoopbackHost } from "@/lib/runtime/baseUrl";
 
 const DEFAULT_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
 const MODEL_SYNC_SETTING_KEY = "model_sync_last_run";
@@ -22,7 +23,7 @@ const INTERNAL_BASE_URL =
   process.env.BASE_URL ||
   process.env.NEXT_PUBLIC_BASE_URL ||
   process.env.NEXT_PUBLIC_APP_URL ||
-  `http://127.0.0.1:${dashboardPort}`;
+  `http://${getLoopbackHost()}:${dashboardPort}`;
 
 const globalState = globalThis as typeof globalThis & {
   __omnirouteModelSyncInternalAuthToken?: string;

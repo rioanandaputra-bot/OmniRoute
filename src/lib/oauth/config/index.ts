@@ -6,6 +6,7 @@
  */
 
 import { getRuntimePorts } from "@/lib/runtime/ports";
+import { getLoopbackHost } from "@/lib/runtime/baseUrl";
 
 interface ServerCredentials {
   server: string;
@@ -15,7 +16,7 @@ interface ServerCredentials {
 
 function getDefaultApiServer() {
   const { dashboardPort } = getRuntimePorts();
-  return `http://127.0.0.1:${dashboardPort}`;
+  return `http://${getLoopbackHost()}:${dashboardPort}`;
 }
 
 /**

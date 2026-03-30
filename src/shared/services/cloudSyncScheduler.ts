@@ -1,6 +1,7 @@
 import { getConsistentMachineId } from "@/shared/utils/machineId";
 import { isCloudEnabled } from "@/lib/localDb";
 import { getRuntimePorts } from "@/lib/runtime/ports";
+import { getLoopbackHost } from "@/lib/runtime/baseUrl";
 
 const { dashboardPort } = getRuntimePorts();
 
@@ -8,7 +9,7 @@ const INTERNAL_BASE_URL =
   process.env.BASE_URL ||
   process.env.NEXT_PUBLIC_BASE_URL ||
   process.env.NEXT_PUBLIC_APP_URL ||
-  `http://127.0.0.1:${dashboardPort}`;
+  `http://${getLoopbackHost()}:${dashboardPort}`;
 
 /**
  * Cloud sync scheduler

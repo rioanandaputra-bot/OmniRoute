@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getPublicBaseUrl } from "@/lib/runtime/baseUrl";
 import { timingSafeEqual } from "crypto";
 import {
   getProvider,
@@ -58,13 +59,7 @@ export async function GET(
     const { searchParams } = new URL(request.url);
 
     if (action === "authorize") {
-      const requestOrigin = request.headers.get("origin") ||
-        (request.headers.get("x-forwarded-proto") && request.headers.get("host")
-          ? `${request.headers.get("x-forwarded-proto")}://${request.headers.get("host")}`
-          : null) ||
-        process.env.NEXT_PUBLIC_BASE_URL ||
-        process.env.BASE_URL ||
-        "http://127.0.0.1:8080";
+      const requestOrigin = getPublicBaseUrl(request, 8080);
       const redirectUri = searchParams.get("redirect_uri") || `${requestOrigin.replace(/\/$/, "")}/callback`;
       const authData = generateAuthData(provider, redirectUri);
       return NextResponse.json(authData);
