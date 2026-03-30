@@ -7,7 +7,11 @@
 
 import type { A2ATask, TaskArtifact } from "../taskManager";
 
-const OMNIROUTE_BASE_URL = process.env.OMNIROUTE_BASE_URL || "http://localhost:20128";
+const OMNIROUTE_BASE_URL =
+  process.env.OMNIROUTE_BASE_URL ||
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  process.env.BASE_URL ||
+  "http://127.0.0.1:20128";
 const OMNIROUTE_API_KEY = process.env.OMNIROUTE_API_KEY || "";
 
 async function routeFetch(path: string, options: RequestInit = {}): Promise<any> {

@@ -89,7 +89,8 @@ export default function DefaultToolCard({
           ? "sk_omniroute"
           : t("yourApiKeyPlaceholder");
 
-    const normalizedBaseUrl = baseUrl || "http://localhost:20128";
+    const normalizedBaseUrl =
+      baseUrl || (typeof window !== "undefined" ? window.location.origin : "");
     const baseUrlWithV1 = normalizedBaseUrl.endsWith("/v1")
       ? normalizedBaseUrl
       : `${normalizedBaseUrl}/v1`;
@@ -125,7 +126,8 @@ export default function DefaultToolCard({
             ? "sk_omniroute"
             : "";
 
-      const normalizedBaseUrl = baseUrl || "http://localhost:20128";
+      const normalizedBaseUrl =
+        baseUrl || (typeof window !== "undefined" ? window.location.origin : "");
       const baseUrlWithV1 = normalizedBaseUrl.endsWith("/v1")
         ? normalizedBaseUrl
         : `${normalizedBaseUrl}/v1`;

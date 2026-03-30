@@ -126,7 +126,7 @@ export default function KiloToolCard({
 
   const getEffectiveBaseUrl = () => {
     if (customBaseUrl) return customBaseUrl;
-    return baseUrl || "http://localhost:20128";
+    return baseUrl || (typeof window !== "undefined" ? window.location.origin : "");
   };
 
   const handleApply = async () => {

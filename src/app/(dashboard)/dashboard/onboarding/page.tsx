@@ -22,7 +22,7 @@ export default function OnboardingWizard() {
   const tc = useTranslations("common");
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [apiEndpoint, setApiEndpoint] = useState("http://localhost:20128/api/v1");
+  const [apiEndpoint, setApiEndpoint] = useState("");
 
   // Security step state
   const [password, setPassword] = useState("");

@@ -10,7 +10,7 @@ import { URL } from "url";
 export function startLocalServer(onCallback: (params: Record<string, string>) => void, fixedPort: number | null = null): Promise<{ server: any; port: number; close: () => void }> {
   return new Promise((resolve, reject) => {
     const server = http.createServer((req, res) => {
-      const url = new URL(req.url || "/", `http://localhost`);
+      const url = new URL(req.url || "/", `http://127.0.0.1`);
 
       if (url.pathname === "/callback" || url.pathname === "/auth/callback") {
         const params = Object.fromEntries(url.searchParams);

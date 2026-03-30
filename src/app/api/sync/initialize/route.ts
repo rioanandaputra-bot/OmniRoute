@@ -19,7 +19,14 @@ export async function POST(request) {
 
     // (#488) Start model auto-sync scheduler (24h, configurable via MODEL_SYNC_INTERVAL_HOURS)
     if (!modelSyncInitialized) {
-      const origin = request.headers.get("origin") || "http://localhost:20128";
+      const origin =
+        request.headers.get("origin") ||
+        (request.headers.get("x-forwarded-proto") && request.headers.get("host")
+          ? `${request.headers.get("x-forwarded-proto")}://${request.headers.get("host")}`
+          : null) ||
+        process.env.NEXT_PUBLIC_BASE_URL ||
+        process.env.BASE_URL ||
+        "http://127.0.0.1:20128";
       startModelSyncScheduler(origin);
       modelSyncInitialized = true;
     }

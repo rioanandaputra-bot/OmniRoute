@@ -269,19 +269,19 @@ export default function OAuthModal({
       // - Localhost deployments: use localhost:port
       let redirectUri: string;
       if (provider === "codex" || provider === "openai") {
-        redirectUri = "http://localhost:1455/auth/callback";
+        redirectUri = "http://127.0.0.1:1455/auth/callback";
       } else if (!isLocalhost) {
         // Behind reverse proxy: use actual origin (e.g., https://omniroute.example.com/callback)
         // Supports NEXT_PUBLIC_BASE_URL env var override, or falls back to window.location.origin.
         const publicUrl = process.env.NEXT_PUBLIC_BASE_URL;
         const origin =
-          publicUrl && publicUrl !== "http://localhost:20128"
+          publicUrl && publicUrl !== "http://127.0.0.1:20128"
             ? publicUrl.replace(/\/$/, "")
             : window.location.origin;
         redirectUri = `${origin}/callback`;
       } else {
         const port = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
-        redirectUri = `http://localhost:${port}/callback`;
+        redirectUri = `http://127.0.0.1:${port}/callback`;
       }
 
       // Legacy note: GOOGLE_OAUTH_PROVIDERS still controls some remote UI hints below,

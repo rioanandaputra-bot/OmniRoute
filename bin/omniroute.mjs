@@ -104,12 +104,12 @@ if (args.includes("--help") || args.includes("-h")) {
     Memory limit: OMNIROUTE_MEMORY_MB (default: 512)
 
   \x1b[1mAfter starting:\x1b[0m
-    Dashboard:  http://localhost:<dashboard-port>
-    API:        http://localhost:<api-port>/v1
+    Dashboard:  http://127.0.0.1:<dashboard-port>
+    API:        http://127.0.0.1:<api-port>/v1
 
   \x1b[1mConnect your tools:\x1b[0m
     Set your CLI tool (Cursor, Cline, Codex, etc.) to use:
-    \x1b[33mhttp://localhost:<api-port>/v1\x1b[0m
+    \x1b[33mhttp://127.0.0.1:<api-port>/v1\x1b[0m
   `);
   process.exit(0);
 }
@@ -306,8 +306,8 @@ process.on("SIGTERM", shutdown);
 
 // ── On ready ───────────────────────────────────────────────
 async function onReady() {
-  const dashboardUrl = `http://localhost:${dashboardPort}`;
-  const apiUrl = `http://localhost:${apiPort}`;
+  const dashboardUrl = `http://127.0.0.1:${dashboardPort}`;
+  const apiUrl = `http://127.0.0.1:${apiPort}`;
 
   console.log(`
   \x1b[32m✔ OmniRoute is running!\x1b[0m

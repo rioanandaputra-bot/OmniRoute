@@ -15,7 +15,7 @@ import { getSettings, updateSettings } from "../../../../lib/localDb";
 
 // Helper to create a Request with JSON body
 function createPatchRequest(body: unknown) {
-  return new Request("http://localhost/api/settings", {
+  return new Request("http://127.0.0.1/api/settings", {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),

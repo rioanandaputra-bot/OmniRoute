@@ -7,7 +7,10 @@ export default function GetStarted() {
   const t = useTranslations("landing");
   const [copied, setCopied] = useState(false);
 
-  const endpoint = "http://localhost:20128";
+  const endpoint =
+    typeof window !== "undefined"
+      ? `${window.location.protocol}//${window.location.host}`
+      : (process.env.NEXT_PUBLIC_BASE_URL || "");
   const dashboardUrl = `${endpoint}/dashboard`;
   const command = "npx omniroute";
 

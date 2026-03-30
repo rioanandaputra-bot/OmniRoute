@@ -82,7 +82,7 @@ export class CodexService extends OAuthService {
         callbackParams = params;
       }, fixedPort);
 
-      const redirectUri = `http://localhost:${port}/auth/callback`;
+      const redirectUri = `http://127.0.0.1:${port}/auth/callback`;
       spinner.succeed(`Local server started on port ${port}`);
 
       // Generate PKCE

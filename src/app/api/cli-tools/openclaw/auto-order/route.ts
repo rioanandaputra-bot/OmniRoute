@@ -6,7 +6,11 @@
 
 import { NextResponse } from "next/server";
 
-const OMNIROUTE_BASE_URL = process.env.OMNIROUTE_BASE_URL || "http://localhost:20128";
+const OMNIROUTE_BASE_URL =
+  process.env.OMNIROUTE_BASE_URL ||
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  process.env.BASE_URL ||
+  "http://127.0.0.1:20128";
 
 export async function GET() {
   try {

@@ -54,7 +54,7 @@ export default function KiroSocialOAuthModal({ isOpen, provider, onSuccess, onCl
     try {
       setError(null);
 
-      // Parse callback URL - can be either kiro:// or http://localhost format
+      // Parse callback URL - can be either kiro:// or http://127.0.0.1 format
       let url;
       try {
         url = new URL(callbackUrl);

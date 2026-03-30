@@ -58,7 +58,14 @@ export async function GET(
     const { searchParams } = new URL(request.url);
 
     if (action === "authorize") {
-      const redirectUri = searchParams.get("redirect_uri") || "http://localhost:8080/callback";
+      const requestOrigin = request.headers.get("origin") ||
+        (request.headers.get("x-forwarded-proto") && request.headers.get("host")
+          ? `${request.headers.get("x-forwarded-proto")}://${request.headers.get("host")}`
+          : null) ||
+        process.env.NEXT_PUBLIC_BASE_URL ||
+        process.env.BASE_URL ||
+        "http://127.0.0.1:8080";
+      const redirectUri = searchParams.get("redirect_uri") || `${requestOrigin.replace(/\/$/, "")}/callback`;
       const authData = generateAuthData(provider, redirectUri);
       return NextResponse.json(authData);
     }
@@ -132,7 +139,7 @@ async function handleStartCallbackServer(provider: string, searchParams: URLSear
       }
     }, 1455);
 
-    const redirectUri = `http://localhost:${port}/auth/callback`;
+    const redirectUri = `http://127.0.0.1:${port}/auth/callback`;
     const authData = generateAuthData(provider, redirectUri);
 
     globalThis.__codexCallbackState = {

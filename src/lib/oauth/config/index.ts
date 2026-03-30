@@ -15,7 +15,7 @@ interface ServerCredentials {
 
 function getDefaultApiServer() {
   const { dashboardPort } = getRuntimePorts();
-  return `http://localhost:${dashboardPort}`;
+  return `http://127.0.0.1:${dashboardPort}`;
 }
 
 /**

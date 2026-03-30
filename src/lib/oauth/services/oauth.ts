@@ -43,7 +43,7 @@ export class OAuthService {
       callbackParams = params;
     });
 
-    const redirectUri = `http://localhost:${port}/callback`;
+    const redirectUri = `http://127.0.0.1:${port}/callback`;
     spinner.succeed(`Local server started on port ${port}`);
 
     return {
