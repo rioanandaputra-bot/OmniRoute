@@ -34,7 +34,7 @@ const nextConfig = {
     "util",
   ],
   transpilePackages: ["@omniroute/open-sse"],
-  allowedDevOrigins: ["localhost", "127.0.0.1", "192.168.*"],
+  allowedDevOrigins: ["127.0.0.1", "192.168.*"],
   typescript: {
     // TODO: Re-enable after fixing all sub-component useTranslations scope issues
     ignoreBuildErrors: true,

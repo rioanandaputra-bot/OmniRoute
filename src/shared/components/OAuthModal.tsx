@@ -20,7 +20,7 @@ type OAuthModalProps = {
 
 /**
  * OAuth Modal Component
- * - Localhost: Auto callback via popup message
+ * - 127.0.0.1: Auto callback via popup message
  * - Remote: Manual paste callback URL
  */
 export default function OAuthModal({
@@ -42,28 +42,27 @@ export default function OAuthModal({
   const { copied, copy } = useCopyToClipboard();
 
   // State for client-only values to avoid hydration mismatch
-  const [isLocalhost, setIsLocalhost] = useState(false);
+  const [is127.0.0.1, setIs127.0.0.1] = useState(false);
   const [placeholderUrl, setPlaceholderUrl] = useState("/callback?code=...");
   const callbackProcessedRef = useRef(false);
   const flowStartedRef = useRef(false);
 
-  // Detect if running on true localhost vs LAN IP (client-side only)
-  // - True localhost (127.0.0.1/localhost): popup auto-callback works
-  // - LAN IPs (192.168.x, 10.x, 172.x): redirect URI uses localhost but callback
+  // Detect if running on true 127.0.0.1 vs LAN IP (client-side only)
+  // - True 127.0.0.1 (127.0.0.1/127.0.0.1): popup auto-callback works
+  // - LAN IPs (192.168.x, 10.x, 172.x): redirect URI uses 127.0.0.1 but callback
   //   won't resolve back to the VPS, so use manual paste mode
-  const [isTrueLocalhost, setIsTrueLocalhost] = useState(false);
+  const [isTrue127.0.0.1, setIsTrue127.0.0.1] = useState(false);
   useEffect(() => {
     if (typeof window !== "undefined") {
       const hostname = window.location.hostname;
       const isLocal =
-        hostname === "localhost" ||
         hostname === "127.0.0.1" ||
         hostname.startsWith("192.168.") ||
         hostname.startsWith("10.") ||
         /^172\.(1[6-9]|2\d|3[01])\./.test(hostname);
-      const isTrulyLocal = hostname === "localhost" || hostname === "127.0.0.1";
-      setIsLocalhost(isLocal);
-      setIsTrueLocalhost(isTrulyLocal);
+      const isTrulyLocal = hostname === "127.0.0.1";
+      setIs127.0.0.1(isLocal);
+      setIsTrue127.0.0.1(isTrulyLocal);
       setPlaceholderUrl(`${window.location.origin}/callback?code=...`);
     }
   }, []);
@@ -105,7 +104,7 @@ export default function OAuthModal({
           GOOGLE_OAUTH_PROVIDERS.has(provider)
         ) {
           setError(
-            "redirect_uri_mismatch: The default Google OAuth credentials only work on localhost. " +
+            "redirect_uri_mismatch: The default Google OAuth credentials only work on 127.0.0.1. " +
               "For remote use, configure your own OAuth credentials via environment variables: " +
               (provider === "antigravity"
                 ? "ANTIGRAVITY_OAUTH_CLIENT_ID and ANTIGRAVITY_OAUTH_CLIENT_SECRET"
@@ -211,11 +210,11 @@ export default function OAuthModal({
         return;
       }
 
-      // Codex: on localhost use callback server on port 1455,
+      // Codex: on 127.0.0.1 use callback server on port 1455,
       // on remote use standard auth code flow (callback server is unreachable)
       if (provider === "codex") {
-        if (isLocalhost) {
-          // Localhost: use callback server on port 1455 + polling
+        if (is127.0.0.1) {
+          // 127.0.0.1: use callback server on port 1455 + polling
           try {
             const serverRes = await fetch(`/api/oauth/codex/start-callback-server`);
             const serverData = await serverRes.json();
@@ -266,11 +265,11 @@ export default function OAuthModal({
       // - Codex/OpenAI: always port 1455 (registered in OAuth app)
       // - Remote deployments: prefer public origin / NEXT_PUBLIC_BASE_URL for all providers,
       //   including Google OAuth providers, so custom OAuth apps can use HTTPS callbacks.
-      // - Localhost deployments: use localhost:port
+      // - 127.0.0.1 deployments: use 127.0.0.1:port
       let redirectUri: string;
       if (provider === "codex" || provider === "openai") {
         redirectUri = "http://127.0.0.1:1455/auth/callback";
-      } else if (!isLocalhost) {
+      } else if (!is127.0.0.1) {
         // Behind reverse proxy: use actual origin (e.g., https://omniroute.example.com/callback)
         // Supports NEXT_PUBLIC_BASE_URL env var override, or falls back to window.location.origin.
         const publicUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -302,12 +301,12 @@ export default function OAuthModal({
 
       setAuthData({ ...data, redirectUri });
 
-      // For non-true-localhost (LAN IPs, remote): use manual input mode (user pastes callback URL)
-      if (!isTrueLocalhost) {
+      // For non-true-127.0.0.1 (LAN IPs, remote): use manual input mode (user pastes callback URL)
+      if (!isTrue127.0.0.1) {
         setStep("input");
         window.open(data.authUrl, "oauth_auth");
       } else {
-        // Localhost: Open popup and wait for message
+        // 127.0.0.1: Open popup and wait for message
         setStep("waiting");
         popupRef.current = window.open(data.authUrl, "oauth_popup", "width=600,height=700");
 
@@ -320,7 +319,7 @@ export default function OAuthModal({
       setError(err.message);
       setStep("error");
     }
-  }, [provider, isLocalhost, isTrueLocalhost, startPolling, onSuccess]);
+  }, [provider, is127.0.0.1, isTrue127.0.0.1, startPolling, onSuccess]);
 
   // Reset guard when modal closes
   useEffect(() => {
@@ -371,13 +370,13 @@ export default function OAuthModal({
 
     // Method 1: postMessage from popup
     const handleMessage = (event) => {
-      // Accept same-origin OR localhost with same port (remote access scenario:
-      // dashboard at 192.168.x:port, callback redirects to localhost:port)
+      // Accept same-origin OR 127.0.0.1 with same port (remote access scenario:
+      // dashboard at 192.168.x:port, callback redirects to 127.0.0.1:port)
       const currentPort = window.location.port;
-      const isLocalhostSamePort =
-        event.origin.match(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/) &&
+      const is127.0.0.1SamePort =
+        event.origin.match(/^https?:\/\/(127\.0\.0\.1)(:\d+)?$/) &&
         new URL(event.origin).port === currentPort;
-      if (event.origin !== window.location.origin && !isLocalhostSamePort) return;
+      if (event.origin !== window.location.origin && !is127.0.0.1SamePort) return;
       if (event.data?.type === "oauth_callback") {
         handleCallback(event.data.data);
       }
@@ -518,7 +517,7 @@ export default function OAuthModal({
   return (
     <Modal isOpen={isOpen} title={`Connect ${providerInfo.name}`} onClose={onClose} size="lg">
       <div className="flex flex-col gap-4">
-        {/* Waiting Step (Localhost - popup mode) */}
+        {/* Waiting Step (127.0.0.1 - popup mode) */}
         {step === "waiting" && !isDeviceCode && (
           <div className="text-center py-6">
             <div className="size-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
@@ -588,14 +587,14 @@ export default function OAuthModal({
           <>
             <div className="space-y-4">
               {/* Remote/LAN server info for Google OAuth providers */}
-              {!isTrueLocalhost && GOOGLE_OAUTH_PROVIDERS.has(provider) && (
+              {!isTrue127.0.0.1 && GOOGLE_OAUTH_PROVIDERS.has(provider) && (
                 <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-200">
                   <span className="material-symbols-outlined text-sm align-middle mr-1">
                     warning
                   </span>
                   <strong>Remote access + Google OAuth:</strong> The default credentials only accept
-                  redirects to <code>localhost</code>. After authorizing, your browser will try to
-                  open <code>localhost</code> — copy that full URL and paste it below. For fully
+                  redirects to <code>127.0.0.1</code>. After authorizing, your browser will try to
+                  open <code>127.0.0.1</code> — copy that full URL and paste it below. For fully
                   remote use without this manual step,{" "}
                   <a
                     href="https://github.com/diegosouzapw/OmniRoute#oauth-on-a-remote-server"
@@ -609,11 +608,11 @@ export default function OAuthModal({
                 </div>
               )}
               {/* Generic remote info for other providers */}
-              {!isTrueLocalhost && !GOOGLE_OAUTH_PROVIDERS.has(provider) && (
+              {!isTrue127.0.0.1 && !GOOGLE_OAUTH_PROVIDERS.has(provider) && (
                 <div className="rounded-lg border border-blue-500/30 bg-blue-500/10 p-3 text-xs text-blue-200">
                   <span className="material-symbols-outlined text-sm align-middle mr-1">info</span>
                   <strong>Remote access:</strong> Since you&apos;re accessing OmniRoute remotely,
-                  after authorizing you&apos;ll see an error page (localhost not found). That&apos;s
+                  after authorizing you&apos;ll see an error page (127.0.0.1 not found). That&apos;s
                   expected — just copy the full URL from your browser&apos;s address bar and paste
                   it below.
                 </div>

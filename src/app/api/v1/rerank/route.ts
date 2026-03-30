@@ -77,7 +77,7 @@ export async function POST(request) {
   const policy = await enforceApiKeyPolicy(request, body.model);
   if (policy.rejection) return policy.rejection;
 
-  // Load local provider_nodes for rerank routing (localhost only)
+  // Load local provider_nodes for rerank routing (127.0.0.1 only)
   let localProviders: ReturnType<typeof buildDynamicRerankProvider>[] = [];
   try {
     const nodes = await getProviderNodes();
@@ -86,7 +86,7 @@ export async function POST(request) {
         try {
           const hostname = new URL(n.baseUrl).hostname;
           return (
-            hostname === "localhost" ||
+            
             hostname === "127.0.0.1" ||
             hostname === "::1" ||
             hostname === "[::1]"

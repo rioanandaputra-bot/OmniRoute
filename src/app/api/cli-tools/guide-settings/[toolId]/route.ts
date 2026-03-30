@@ -107,7 +107,7 @@ async function saveContinueConfig({ baseUrl, apiKey, model }) {
       (m.omnirouteManaged === true ||
         normalizeApiBase(m.apiBase) === normalizedBaseUrl.toLowerCase() ||
         normalizeApiBase(m.apiBase).includes("omniroute") ||
-        normalizeApiBase(m.apiBase).includes(`localhost:${apiPort}`) ||
+        normalizeApiBase(m.apiBase).includes(`127.0.0.1:${apiPort}`) ||
         normalizeApiBase(m.apiBase).includes(`127.0.0.1:${apiPort}`) ||
         String(m.apiKey || "")
           .toLowerCase()

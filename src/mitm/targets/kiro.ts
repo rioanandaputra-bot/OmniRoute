@@ -14,7 +14,7 @@
  *   omniroute mitm start --targets kiro
  *
  * The MITM server intercepts requests to api.anthropic.com and forwards
- * them to the OmniRoute proxy (localhost:20128) instead.
+ * them to the OmniRoute proxy (127.0.0.1:20128) instead.
  */
 
 export interface MitmTarget {

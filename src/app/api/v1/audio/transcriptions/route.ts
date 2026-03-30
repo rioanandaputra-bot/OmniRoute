@@ -62,7 +62,7 @@ export async function POST(request) {
   const policy = await enforceApiKeyPolicy(request, model as string);
   if (policy.rejection) return policy.rejection;
 
-  // Load local provider_nodes for audio routing (only localhost — prevents auth bypass/SSRF)
+  // Load local provider_nodes for audio routing (only loopback — prevents auth bypass/SSRF)
   let dynamicProviders: ReturnType<typeof buildDynamicAudioProvider>[] = [];
   try {
     const nodes = await getProviderNodes();
@@ -72,7 +72,7 @@ export async function POST(request) {
         try {
           const hostname = new URL(n.baseUrl).hostname;
           return (
-            hostname === "localhost" ||
+            
             hostname === "127.0.0.1" ||
             hostname === "::1" ||
             hostname === "[::1]"

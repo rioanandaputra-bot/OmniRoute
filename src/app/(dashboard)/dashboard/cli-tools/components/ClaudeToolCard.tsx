@@ -46,7 +46,7 @@ export default function ClaudeToolCard({
     if (!cliReady) return null;
     const currentUrl = claudeStatus.settings?.env?.ANTHROPIC_BASE_URL;
     if (!currentUrl) return "not_configured";
-    const localMatch = currentUrl.includes("localhost") || currentUrl.includes("127.0.0.1");
+    const localMatch = currentUrl.includes("127.0.0.1") || currentUrl.includes("127.0.0.1");
     const cloudMatch = cloudEnabled && CLOUD_URL && currentUrl.startsWith(CLOUD_URL);
     if (localMatch || cloudMatch) return "configured";
     return "other";
@@ -136,7 +136,7 @@ export default function ClaudeToolCard({
       const env: any = { ANTHROPIC_BASE_URL: getEffectiveBaseUrl() };
 
       // (#523) Prefer keyId lookup so the backend writes the real key to disk.
-      // Fall back to sk_omniroute for localhost-only setups without a key.
+      // Fall back to sk_omniroute for 127.0.0.1-only setups without a key.
       const selectedKeyId = selectedApiKey?.trim() || (apiKeys?.length > 0 ? apiKeys[0].id : null);
       const skOmnirouteFallback = !cloudEnabled ? "sk_omniroute" : null;
 

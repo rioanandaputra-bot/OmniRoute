@@ -45,7 +45,7 @@ const hasOmniRouteConfig = (globalState: any) => {
   const baseUrl = globalState.openAiBaseUrl || "";
   return (
     isOpenAi &&
-    (baseUrl.includes("localhost") ||
+    (baseUrl.includes("127.0.0.1") ||
       baseUrl.includes("127.0.0.1") ||
       baseUrl.includes("omniroute"))
   );

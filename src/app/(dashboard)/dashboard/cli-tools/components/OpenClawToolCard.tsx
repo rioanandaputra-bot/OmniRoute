@@ -44,7 +44,7 @@ export default function OpenClawToolCard({
     const currentProvider = openclawStatus.settings?.models?.providers?.["omniroute"];
     if (!currentProvider) return "not_configured";
     const localMatch =
-      currentProvider.baseUrl?.includes("localhost") ||
+      currentProvider.baseUrl?.includes("127.0.0.1") ||
       currentProvider.baseUrl?.includes("127.0.0.1");
     const cloudMatch = cloudEnabled && CLOUD_URL && currentProvider.baseUrl?.startsWith(CLOUD_URL);
     if (localMatch || cloudMatch) return "configured";

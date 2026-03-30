@@ -80,7 +80,7 @@ export default function CodexToolCard({
     if (!codexStatus.config) return "not_configured";
     const hasBaseUrl =
       codexStatus.config.includes(baseUrl) ||
-      codexStatus.config.includes("localhost") ||
+      codexStatus.config.includes("127.0.0.1") ||
       codexStatus.config.includes("127.0.0.1");
     return hasBaseUrl ? "configured" : "other";
   };
@@ -115,7 +115,7 @@ export default function CodexToolCard({
     setApplying(true);
     setMessage(null);
     try {
-      // Use sk_omniroute for localhost if no key, otherwise use selected key
+      // Use sk_omniroute for 127.0.0.1 if no key, otherwise use selected key
       const keyToUse =
         selectedApiKey && selectedApiKey.trim()
           ? selectedApiKey

@@ -38,7 +38,7 @@ async function checkToolConfigStatus(toolId: string): Promise<string> {
         const configStr = JSON.stringify(config).toLowerCase();
         return configStr.includes("omniroute") ||
           configStr.includes("sk_omniroute") ||
-          configStr.includes(`localhost:${apiPort}`) ||
+          configStr.includes(`127.0.0.1:${apiPort}`) ||
           configStr.includes(`127.0.0.1:${apiPort}`)
           ? "configured"
           : "not_configured";

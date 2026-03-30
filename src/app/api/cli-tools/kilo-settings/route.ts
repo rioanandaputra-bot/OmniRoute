@@ -33,7 +33,7 @@ const hasOmniRouteConfig = (auth) => {
   if (!routerEntry) return false;
   const baseUrl = routerEntry.baseUrl || routerEntry.baseURL || "";
   return (
-    baseUrl.includes("localhost") || baseUrl.includes("127.0.0.1") || baseUrl.includes("omniroute")
+    baseUrl.includes("127.0.0.1") || baseUrl.includes("127.0.0.1") || baseUrl.includes("omniroute")
   );
 };
 

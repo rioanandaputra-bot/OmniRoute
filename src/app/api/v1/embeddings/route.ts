@@ -114,7 +114,7 @@ export async function POST(request) {
   const policy = await enforceApiKeyPolicy(request, body.model);
   if (policy.rejection) return policy.rejection;
 
-  // Load local provider_nodes for embedding routing (only localhost — prevents auth bypass/SSRF)
+  // Load local provider_nodes for embedding routing (only loopback — prevents auth bypass/SSRF)
   let dynamicProviders: ReturnType<typeof buildDynamicEmbeddingProvider>[] = [];
   try {
     const nodes = (await getProviderNodes()) as unknown as EmbeddingProviderNodeRow[];
@@ -126,7 +126,7 @@ export async function POST(request) {
         try {
           const hostname = new URL(n.baseUrl).hostname;
           return (
-            hostname === "localhost" ||
+            
             hostname === "127.0.0.1" ||
             hostname === "::1" ||
             hostname === "[::1]"
@@ -162,7 +162,7 @@ export async function POST(request) {
     dynamicProviders.find((dp) => dp.id === provider) || getEmbeddingProvider(provider) || null;
   let credentialsProviderId = provider;
 
-  // #496: Fallback — resolve from ALL provider_nodes (not just localhost)
+  // #496: Fallback — resolve from ALL provider_nodes (not just 127.0.0.1)
   // This enables custom embedding models (e.g. google/gemini-embedding-001) whose
   // providers have remote baseUrls. Safe because getProviderCredentials() authenticates.
   if (!providerConfig) {

@@ -1,7 +1,7 @@
 /**
  * Local Provider Health Check
  *
- * Background polling of local provider_nodes (localhost) to detect
+ * Background polling of local provider_nodes (loopback) to detect
  * when they are up or down. Uses GET /models with a 5s timeout.
  *
  * Health status is stored in-memory (no DB migration needed).
@@ -61,7 +61,7 @@ const healthCache = getLHCState().healthCache;
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
-function isLocalhostUrl(baseUrl: string): boolean {
+function isLoopbackUrl(baseUrl: string): boolean {
   try {
     const u = new URL(baseUrl);
     // Block credentials in URL to prevent SSRF via user@host (e.g., http://127.0.0.1@evil.com)
@@ -69,7 +69,7 @@ function isLocalhostUrl(baseUrl: string): boolean {
     // Note: URL.hostname returns "[::1]" WITH brackets for IPv6 — both forms checked.
     // Verified: node -e "new URL('http://[::1]:8080').hostname" → "[::1]"
     return (
-      u.hostname === "localhost" ||
+      
       u.hostname === "127.0.0.1" ||
       u.hostname === "::1" ||
       u.hostname === "[::1]"
@@ -134,7 +134,7 @@ export async function sweep(): Promise<void> {
       const raw = await getProviderNodes();
       nodes = (Array.isArray(raw) ? raw : []).filter(
         (n: Record<string, unknown>) =>
-          typeof n.baseUrl === "string" && isLocalhostUrl(n.baseUrl as string)
+          typeof n.baseUrl === "string" && isLoopbackUrl(n.baseUrl as string)
       ) as Array<{ id: string; prefix: string; baseUrl: string }>;
     } catch (err) {
       console.error(LOG_PREFIX, "Failed to load provider_nodes:", err);
