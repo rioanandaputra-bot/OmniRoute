@@ -264,22 +264,15 @@ export default function OAuthModal({
       // Authorization code flow
       // Redirect URI strategy:
       // - Codex/OpenAI: always port 1455 (registered in OAuth app)
-      // - Google OAuth providers (antigravity, gemini-cli): always localhost, regardless of
-      //   where OmniRoute is hosted — Google only accepts pre-registered localhost URIs with
-      //   the built-in credentials. Remote users must configure their own credentials.
-      // - Other providers on remote: use actual origin (supports PUBLIC_URL env var)
-      // - Localhost: use localhost:port
+      // - Remote deployments: prefer public origin / NEXT_PUBLIC_BASE_URL for all providers,
+      //   including Google OAuth providers, so custom OAuth apps can use HTTPS callbacks.
+      // - Localhost deployments: use localhost:port
       let redirectUri: string;
       if (provider === "codex" || provider === "openai") {
         redirectUri = "http://localhost:1455/auth/callback";
-      } else if (GOOGLE_OAUTH_PROVIDERS.has(provider)) {
-        // Google OAuth built-in credentials only accept localhost redirect URIs.
-        // Even in remote deployments we use localhost — user copies the callback URL manually.
-        const port = window.location.port || "20128";
-        redirectUri = `http://localhost:${port}/callback`;
       } else if (!isLocalhost) {
         // Behind reverse proxy: use actual origin (e.g., https://omniroute.example.com/callback)
-        // Supports PUBLIC_URL env var override, or falls back to window.location.origin.
+        // Supports NEXT_PUBLIC_BASE_URL env var override, or falls back to window.location.origin.
         const publicUrl = process.env.NEXT_PUBLIC_BASE_URL;
         const origin =
           publicUrl && publicUrl !== "http://localhost:20128"
@@ -290,6 +283,9 @@ export default function OAuthModal({
         const port = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
         redirectUri = `http://localhost:${port}/callback`;
       }
+
+      // Legacy note: GOOGLE_OAUTH_PROVIDERS still controls some remote UI hints below,
+      // but redirectUri itself now follows the public origin for remote deployments.
 
       const res = await fetch(
         `/api/oauth/${provider}/authorize?redirect_uri=${encodeURIComponent(redirectUri)}`
