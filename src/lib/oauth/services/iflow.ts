@@ -1,3 +1,4 @@
+import { getLoopbackHost } from "@/lib/runtime/baseUrl";
 import crypto from "crypto";
 import open from "open";
 import { IFLOW_CONFIG } from "../constants/oauth";
@@ -136,7 +137,7 @@ export class IFlowService {
         callbackParams = params;
       });
 
-      const redirectUri = `http://127.0.0.1:${port}/callback`;
+      const redirectUri = `http://${getLoopbackHost()}:${port}/callback`;
       spinner.succeed(`Local server started on port ${port}`);
 
       // Generate state

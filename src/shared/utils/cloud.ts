@@ -1,9 +1,10 @@
+import { getLoopbackHost } from "@/lib/runtime/baseUrl";
 import { getMachineId } from "@/shared/utils/machine";
 
 // Function to get cloud URL with machine ID
 export function getCloudUrl(machineId) {
   // Get from environment or default to local cloud bridge
-  const cloudUrl = process.env.NEXT_PUBLIC_CLOUD_URL || "http://127.0.0.1:8787";
+  const cloudUrl = process.env.NEXT_PUBLIC_CLOUD_URL || `http://${getLoopbackHost()}:8787`;
   return `${cloudUrl}/${machineId}/v1/chat/completions`;
 }
 

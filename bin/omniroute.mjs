@@ -77,6 +77,8 @@ function loadEnvFile() {
 
 loadEnvFile();
 
+const LOOPBACK_HOST = process.env.OMNIROUTE_LOOPBACK_HOST || process.env.LOOPBACK_HOST || '127.0.0.1';
+
 // ── Parse args ─────────────────────────────────────────────
 const args = process.argv.slice(2);
 
@@ -104,12 +106,12 @@ if (args.includes("--help") || args.includes("-h")) {
     Memory limit: OMNIROUTE_MEMORY_MB (default: 512)
 
   \x1b[1mAfter starting:\x1b[0m
-    Dashboard:  http://127.0.0.1:<dashboard-port>
-    API:        http://127.0.0.1:<api-port>/v1
+    Dashboard:  http://${LOOPBACK_HOST}:<dashboard-port>
+    API:        http://${LOOPBACK_HOST}:<api-port>/v1
 
   \x1b[1mConnect your tools:\x1b[0m
     Set your CLI tool (Cursor, Cline, Codex, etc.) to use:
-    \x1b[33mhttp://127.0.0.1:<api-port>/v1\x1b[0m
+    \x1b[33mhttp://${LOOPBACK_HOST}:<api-port>/v1\x1b[0m
   `);
   process.exit(0);
 }
@@ -306,8 +308,8 @@ process.on("SIGTERM", shutdown);
 
 // ── On ready ───────────────────────────────────────────────
 async function onReady() {
-  const dashboardUrl = `http://127.0.0.1:${dashboardPort}`;
-  const apiUrl = `http://127.0.0.1:${apiPort}`;
+  const dashboardUrl = `http://${LOOPBACK_HOST}:${dashboardPort}`;
+  const apiUrl = `http://${LOOPBACK_HOST}:${apiPort}`;
 
   console.log(`
   \x1b[32m✔ OmniRoute is running!\x1b[0m

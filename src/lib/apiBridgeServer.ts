@@ -1,6 +1,7 @@
 import http from "http";
 import type { IncomingMessage, ServerResponse } from "http";
 import { getRuntimePorts } from "@/lib/runtime/ports";
+import { getLoopbackHost } from "@/lib/runtime/baseUrl";
 
 const DEFAULT_PROXY_TIMEOUT_MS = 30_000;
 
@@ -35,13 +36,13 @@ function isOpenAiCompatiblePath(pathname: string): boolean {
 function proxyRequest(req: IncomingMessage, res: ServerResponse, dashboardPort: number): void {
   const targetReq = http.request(
     {
-      hostname: "127.0.0.1",
+      hostname: getLoopbackHost(),
       port: dashboardPort,
       method: req.method,
       path: req.url,
       headers: {
         ...req.headers,
-        host: `127.0.0.1:${dashboardPort}`,
+        host: `${getLoopbackHost()}:${dashboardPort}`,
       },
       timeout: PROXY_TIMEOUT_MS,
     },
@@ -91,7 +92,7 @@ export function initApiBridgeServer(): void {
   const { apiPort, dashboardPort } = getRuntimePorts();
   if (apiPort === dashboardPort) return;
 
-  const host = process.env.API_HOST || "127.0.0.1";
+  const host = process.env.API_HOST || getLoopbackHost();
 
   const server = http.createServer((req, res) => {
     const rawUrl = req.url || "/";

@@ -1,3 +1,4 @@
+import { getLoopbackHost } from "@/lib/runtime/baseUrl";
 import http from "http";
 import { URL } from "url";
 
@@ -10,7 +11,7 @@ import { URL } from "url";
 export function startLocalServer(onCallback: (params: Record<string, string>) => void, fixedPort: number | null = null): Promise<{ server: any; port: number; close: () => void }> {
   return new Promise((resolve, reject) => {
     const server = http.createServer((req, res) => {
-      const url = new URL(req.url || "/", `http://127.0.0.1`);
+      const url = new URL(req.url || "/", `http://${getLoopbackHost()}`);
 
       if (url.pathname === "/callback" || url.pathname === "/auth/callback") {
         const params = Object.fromEntries(url.searchParams);
@@ -66,7 +67,7 @@ export function startLocalServer(onCallback: (params: Record<string, string>) =>
 
     // Listen on fixed port or find available port
     const portToUse = fixedPort || 0;
-    server.listen(portToUse, "127.0.0.1", () => {
+    server.listen(portToUse, process.env.OMNIROUTE_CALLBACK_BIND_HOST || "127.0.0.1", () => {
       const addr = server.address() as { port: number };
       resolve({
         server,

@@ -52,6 +52,7 @@ export default function OAuthModal({
   // - LAN IPs (192.168.x, 10.x, 172.x): redirect URI uses 127.0.0.1 but callback
   //   won't resolve back to the VPS, so use manual paste mode
   const [isTrueLoopback, setIsTrueLoopback] = useState(false);
+  const loopbackHost = process.env.NEXT_PUBLIC_LOOPBACK_HOST || "127.0.0.1";
   useEffect(() => {
     if (typeof window !== "undefined") {
       const hostname = window.location.hostname;
@@ -268,19 +269,19 @@ export default function OAuthModal({
       // - 127.0.0.1 deployments: use 127.0.0.1:port
       let redirectUri: string;
       if (provider === "codex" || provider === "openai") {
-        redirectUri = "http://127.0.0.1:1455/auth/callback";
+        redirectUri = `http://${loopbackHost}:1455/auth/callback`;
       } else if (!isLoopback) {
         // Behind reverse proxy: use actual origin (e.g., https://omniroute.example.com/callback)
         // Supports NEXT_PUBLIC_BASE_URL env var override, or falls back to window.location.origin.
         const publicUrl = process.env.NEXT_PUBLIC_BASE_URL;
         const origin =
-          publicUrl && publicUrl !== "http://127.0.0.1:20128"
+          publicUrl && publicUrl !== `http://${loopbackHost}:20128`
             ? publicUrl.replace(/\/$/, "")
             : window.location.origin;
         redirectUri = `${origin}/callback`;
       } else {
         const port = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
-        redirectUri = `http://127.0.0.1:${port}/callback`;
+        redirectUri = `http://${loopbackHost}:${port}/callback`;
       }
 
       // Legacy note: GOOGLE_OAUTH_PROVIDERS still controls some remote UI hints below,

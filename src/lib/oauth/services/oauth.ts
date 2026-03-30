@@ -1,3 +1,4 @@
+import { getLoopbackHost } from "@/lib/runtime/baseUrl";
 import open from "open";
 import { startLocalServer } from "../utils/server";
 import { generatePKCE } from "../utils/pkce";
@@ -43,7 +44,7 @@ export class OAuthService {
       callbackParams = params;
     });
 
-    const redirectUri = `http://127.0.0.1:${port}/callback`;
+    const redirectUri = `http://${getLoopbackHost()}:${port}/callback`;
     spinner.succeed(`Local server started on port ${port}`);
 
     return {

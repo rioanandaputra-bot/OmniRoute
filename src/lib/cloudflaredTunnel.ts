@@ -6,6 +6,7 @@ import path from "path";
 import proxyFetch from "@omniroute/open-sse/utils/proxyFetch.ts";
 import { resolveDataDir } from "@/lib/dataPaths";
 import { getRuntimePorts } from "@/lib/runtime/ports";
+import { getLoopbackHost } from "@/lib/runtime/baseUrl";
 
 const execFileAsync = promisify(execFile);
 
@@ -157,7 +158,7 @@ export function getCloudflaredRuntimeDirs(): CloudflaredRuntimeDirs {
 
 function getLocalTargetUrl() {
   const { apiPort } = getRuntimePorts();
-  return `http://127.0.0.1:${apiPort}`;
+  return `http://${getLoopbackHost()}:${apiPort}`;
 }
 
 function getTunnelApiUrl(publicUrl: string | null) {

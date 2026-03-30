@@ -1,3 +1,4 @@
+import { getPublicBaseUrl } from "@/lib/runtime/baseUrl";
 /**
  * A2A Skill: Smart Routing
  *
@@ -11,7 +12,7 @@ const OMNIROUTE_BASE_URL =
   process.env.OMNIROUTE_BASE_URL ||
   process.env.NEXT_PUBLIC_BASE_URL ||
   process.env.BASE_URL ||
-  "http://127.0.0.1:20128";
+  getPublicBaseUrl(undefined, 20128);
 const OMNIROUTE_API_KEY = process.env.OMNIROUTE_API_KEY || "";
 
 async function routeFetch(path: string, options: RequestInit = {}): Promise<any> {

@@ -1,3 +1,4 @@
+import { getLoopbackHost } from "@/lib/runtime/baseUrl";
 import open from "open";
 import { OAuthService } from "./oauth";
 import { CODEX_CONFIG } from "../constants/oauth";
@@ -82,7 +83,7 @@ export class CodexService extends OAuthService {
         callbackParams = params;
       }, fixedPort);
 
-      const redirectUri = `http://127.0.0.1:${port}/auth/callback`;
+      const redirectUri = `http://${getLoopbackHost()}:${port}/auth/callback`;
       spinner.succeed(`Local server started on port ${port}`);
 
       // Generate PKCE

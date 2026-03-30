@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getPublicBaseUrl } from "@/lib/runtime/baseUrl";
+import { getPublicBaseUrl, getLoopbackHost } from "@/lib/runtime/baseUrl";
 import { timingSafeEqual } from "crypto";
 import {
   getProvider,
@@ -134,7 +134,7 @@ async function handleStartCallbackServer(provider: string, searchParams: URLSear
       }
     }, 1455);
 
-    const redirectUri = `http://127.0.0.1:${port}/auth/callback`;
+    const redirectUri = `http://${getLoopbackHost()}:${port}/auth/callback`;
     const authData = generateAuthData(provider, redirectUri);
 
     globalThis.__codexCallbackState = {

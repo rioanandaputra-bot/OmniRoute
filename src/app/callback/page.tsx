@@ -32,7 +32,7 @@ function CallbackContent() {
     // Check if this callback is from expected origin/port
     const expectedOrigins = [
       window.location.origin, // Same origin (for most providers)
-      "http://127.0.0.1:1455", // Codex specific port
+      `http://${loopbackHost}:1455`, // Codex specific port
     ];
 
     // Method 1: postMessage to opener (popup mode)
